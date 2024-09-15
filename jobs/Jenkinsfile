@@ -1,0 +1,51 @@
+import groovy.json.JsonSlurperClassic
+
+def jsonParse (def json) {
+    new groovy.json.JsonSlurperClassic().parseText(json)
+}
+
+pipeline {
+    //Agente que se ejecutará
+    agent { label 'main' }
+    //Declaracion de variables
+    environment {
+        appName = 'variable'
+    }
+    //Fases
+    stages {
+        //Fase de build
+        stage('Build - Paso 1') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        //Fase de test
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        //Fase de deploy
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
+        }
+    }
+    //Se ejecuta despues de la tarea
+    post {
+        //Se ejecuta siempre
+        always {
+            deleteDir()
+            echo 'Fase always'
+        }
+        //Se ejecuta cuando la tarea esta correcta
+        success {
+            echo 'Fase success'
+        }
+        //Se ejecuta siempre cuando la tarea fallo
+        failure {
+            echo 'Fase failure'
+        }
+    }
+}
